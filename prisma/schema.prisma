@@ -61,6 +61,25 @@ model Asset {
 
   assignments       AssetAssignment[]
   assignmentArchives AssetAssignmentArchive[]
+  repairHistories   RepairHistory[]
+}
+
+model RepairHistory {
+  id          String   @id @default(cuid())
+  assetId     String
+  asset       Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  repairDate  DateTime
+  issue       String
+  vendor      String?
+  status      String   @default("COMPLETED")
+  costInr     Float?
+  costEur     Float?
+  remarks     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([assetId])
+  @@index([repairDate])
 }
 
 model AISubscriptionRegister {

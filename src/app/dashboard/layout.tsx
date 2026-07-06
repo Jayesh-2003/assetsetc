@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { LogOut, Users, Laptop, Briefcase, Cpu, Car, LayoutGrid, Settings, ClipboardList } from 'lucide-react';
+import { LogOut, Users, Laptop, Cpu, Car, LayoutGrid, Settings, ClipboardList, Wrench } from 'lucide-react';
 import { logoutAction } from '@/app/actions/auth';
 import { getSession } from '@/lib/auth';
 
@@ -50,6 +50,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <Link href="/dashboard/assignments" className="flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 text-[15px]">
                 <LayoutGrid className="w-5 h-5 mr-3 shrink-0" />
                 <span className="truncate">Assignments</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/dashboard/repair-history" className="flex items-center px-4 py-3 rounded-xl text-gray-600 hover:bg-gray-100 text-[15px]">
+                <Wrench className="w-5 h-5 mr-3 shrink-0" />
+                <span className="truncate">Repair History</span>
               </Link>
             </li>
             <li>
