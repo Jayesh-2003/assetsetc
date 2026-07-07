@@ -9,6 +9,17 @@ export async function logAudit(
   changedByEmployeeId: string | null = null
 ) {
   try {
+    let validEmployeeId = null;
+    if (changedByEmployeeId) {
+      const exists = await prisma.employee.findUnique({
+        where: { id: changedByEmployeeId },
+        select: { id: true }
+      });
+      if (exists) {
+        validEmployeeId = changedByEmployeeId;
+      }
+    }
+
     await prisma.auditLog.create({
       data: {
         tableName,
@@ -16,7 +27,7 @@ export async function logAudit(
         action,
         oldData: oldData ? JSON.stringify(oldData) : null,
         newData: newData ? JSON.stringify(newData) : null,
-        changedByEmployeeId,
+        changedByEmployeeId: validEmployeeId,
       },
     });
   } catch (error) {
