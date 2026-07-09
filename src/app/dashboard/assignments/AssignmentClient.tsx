@@ -18,15 +18,17 @@ export default function AssignmentClient({ assets, employees }: { assets: any[],
   
   const [employeeId, setEmployeeId] = useState('');
   const [remarks, setRemarks] = useState('');
+  const selectedEmployee = employees.find(e => e.id === employeeId);
 
   const filtered = assets.filter(a => 
     (a.model || '').toLowerCase().includes(search.toLowerCase()) || 
     (a.serialNumber || '').toLowerCase().includes(search.toLowerCase()) ||
-    (a.assetType || '').toLowerCase().includes(search.toLowerCase())
+    (a.assetType || '').toLowerCase().includes(search.toLowerCase()) ||
+    (a.assignments?.[0]?.employee?.department || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const handleExportCSV = () => {
-    const headers = ['Asset Type', 'Model/Name', 'Serial/Number', 'Status', 'Assigned To (Name)', 'Assigned To (Email)', 'Assigned Date'];
+    const headers = ['Asset Type', 'Model/Name', 'Serial/Number', 'Status', 'Assigned To (Name)', 'Assigned To (Email)', 'Assigned To Dept', 'Assigned Date'];
     const rows = filtered.map(a => {
       const assignment = a.assignments && a.assignments.length > 0 ? a.assignments[0] : null;
       return [
@@ -36,6 +38,7 @@ export default function AssignmentClient({ assets, employees }: { assets: any[],
         assignment ? 'With Employee' : 'In Office',
         assignment ? `"${assignment.employee?.name || ''}"` : '',
         assignment ? assignment.employee?.email : '',
+        assignment ? `"${assignment.employee?.department || ''}"` : '',
         assignment ? new Date(assignment.assignedDatetime).toLocaleDateString() : ''
       ];
     });
@@ -90,6 +93,7 @@ export default function AssignmentClient({ assets, employees }: { assets: any[],
               <TableHead>Serial / SIM No</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Assigned To</TableHead>
+              <TableHead>Dept</TableHead>
               <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
@@ -121,6 +125,7 @@ export default function AssignmentClient({ assets, employees }: { assets: any[],
                       <span className="text-gray-400">-</span>
                     )}
                   </TableCell>
+                  <TableCell>{assignment?.employee?.department || '-'}</TableCell>
                   <TableCell className="text-right">
                     {!assignment ? (
                       <Button size="sm" onClick={() => {
@@ -146,7 +151,7 @@ export default function AssignmentClient({ assets, employees }: { assets: any[],
             })}
             {filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-500">No assets found.</TableCell>
+                <TableCell colSpan={6} className="text-center py-8 text-gray-500">No assets found.</TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -177,6 +182,11 @@ export default function AssignmentClient({ assets, employees }: { assets: any[],
                   <option key={e.id} value={e.id}>{e.name} ({e.email})</option>
                 ))}
               </select>
+            </div>
+
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Dept</label>
+              <Input value={selectedEmployee?.department || '-'} readOnly className="bg-gray-50 text-gray-600" />
             </div>
 
             <div className="grid gap-2">
