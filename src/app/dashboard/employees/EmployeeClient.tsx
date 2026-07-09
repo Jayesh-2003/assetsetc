@@ -18,16 +18,17 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
   
   const [selectedEmp, setSelectedEmp] = useState<any>(null);
   
-  const [formData, setFormData] = useState({ name: '', email: '', slack_id: '', mobile_number: '', role: 'EMPLOYEE', remarks: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', department: '', slack_id: '', mobile_number: '', role: 'EMPLOYEE', remarks: '' });
 
   const filtered = employees.filter(e => 
     (e.name || '').toLowerCase().includes(search.toLowerCase()) || 
-    (e.email || '').toLowerCase().includes(search.toLowerCase())
+    (e.email || '').toLowerCase().includes(search.toLowerCase()) ||
+    (e.department || '').toLowerCase().includes(search.toLowerCase())
   );
 
   const handleExportCSV = () => {
-    const headers = ['ID', 'Name', 'Email', 'Role', 'Slack ID', 'Mobile', 'Remarks'];
-    const rows = filtered.map(e => [e.id, e.name, e.email, e.role, e.slack_id, e.mobile_number, `"${e.remarks || ''}"`]);
+    const headers = ['ID', 'Name', 'Email', 'Dept', 'Role', 'Slack ID', 'Mobile', 'Remarks'];
+    const rows = filtered.map(e => [e.id, e.name, e.email, e.department, e.role, e.slack_id, e.mobile_number, `"${e.remarks || ''}"`]);
     const csvContent = [headers, ...rows].map(e => e.join(',')).join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -43,7 +44,7 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
     if (res.success) {
       setEmployees([res.data, ...employees]);
       setIsAddOpen(false);
-      setFormData({ name: '', email: '', slack_id: '', mobile_number: '', role: 'EMPLOYEE', remarks: '' });
+      setFormData({ name: '', email: '', department: '', slack_id: '', mobile_number: '', role: 'EMPLOYEE', remarks: '' });
     }
   };
 
@@ -92,6 +93,7 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
+              <TableHead>Dept</TableHead>
               <TableHead>Role</TableHead>
               <TableHead>Slack ID</TableHead>
               <TableHead>Remarks</TableHead>
@@ -103,6 +105,7 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
               <TableRow key={emp.id}>
                 <TableCell className="font-medium">{emp.name || '-'}</TableCell>
                 <TableCell>{emp.email}</TableCell>
+                <TableCell>{emp.department || '-'}</TableCell>
                 <TableCell>
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${emp.role === 'ADMIN' ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}`}>
                     {emp.role}
@@ -113,7 +116,7 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
                 <TableCell className="text-right space-x-2">
                   <Button variant="ghost" size="sm" onClick={() => {
                     setSelectedEmp(emp);
-                    setFormData({ name: emp.name || '', email: emp.email || '', slack_id: emp.slack_id || '', mobile_number: emp.mobile_number || '', role: emp.role || 'EMPLOYEE', remarks: emp.remarks || '' });
+                    setFormData({ name: emp.name || '', email: emp.email || '', department: emp.department || '', slack_id: emp.slack_id || '', mobile_number: emp.mobile_number || '', role: emp.role || 'EMPLOYEE', remarks: emp.remarks || '' });
                     setIsEditOpen(true);
                   }}>
                     <Pencil className="h-4 w-4" />
@@ -129,7 +132,7 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
             ))}
             {filtered.length === 0 && (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-gray-500">No employees found.</TableCell>
+                <TableCell colSpan={6} className="text-center py-8 text-gray-500">No employees found.</TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -150,6 +153,10 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
             <div className="grid gap-2">
               <label className="text-sm font-medium">Email</label>
               <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
+            </div>
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Dept</label>
+              <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} />
             </div>
             <div className="grid gap-2">
               <label className="text-sm font-medium">Role</label>
@@ -188,6 +195,10 @@ export default function EmployeeClient({ initialEmployees }: { initialEmployees:
             <div className="grid gap-2">
               <label className="text-sm font-medium">Email</label>
               <Input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} required />
+            </div>
+            <div className="grid gap-2">
+              <label className="text-sm font-medium">Dept</label>
+              <Input value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} />
             </div>
             <div className="grid gap-2">
               <label className="text-sm font-medium">Role</label>

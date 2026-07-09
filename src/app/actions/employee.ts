@@ -14,6 +14,7 @@ export async function createEmployee(data: any) {
     data: {
       email: data.email,
       name: data.name,
+      department: data.department,
       slack_id: data.slack_id,
       mobile_number: data.mobile_number,
       role: data.role || 'EMPLOYEE',
@@ -36,6 +37,7 @@ export async function updateEmployee(id: string, data: any) {
     data: {
       email: data.email,
       name: data.name,
+      department: data.department,
       slack_id: data.slack_id,
       mobile_number: data.mobile_number,
       role: data.role,

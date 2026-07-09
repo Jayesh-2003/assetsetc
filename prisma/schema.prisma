@@ -8,44 +8,45 @@ datasource db {
 }
 
 model Employee {
-  id                    String   @id @default(cuid())
-  email                 String   @unique
-  password              String
-  name                  String?
-  slack_id              String?
-  mobile_number         String?
-  role                  String   @default("EMPLOYEE")
-  remarks               String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id            String   @id @default(cuid())
+  email         String   @unique
+  password      String
+  name          String?
+  department    String?
+  slack_id      String?
+  mobile_number String?
+  role          String   @default("EMPLOYEE")
+  remarks       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  remoteWorkStatuses    RemoteWorkStatus[]
-  assetAssignments      AssetAssignment[]
+  remoteWorkStatuses        RemoteWorkStatus[]
+  assetAssignments          AssetAssignment[]
   aiSubscriptionAssignments AISubscriptionAssignment[]
-  parkingPermits        ParkingPermit[]
-  
-  assetAssignmentArchives AssetAssignmentArchive[]
-  aiSubscriptionAssignmentArchives AISubscriptionAssignmentArchive[]
-  parkingPermitArchives ParkingPermitArchive[]
+  parkingPermits            ParkingPermit[]
 
-  auditsTriggered       AuditLog[]
+  assetAssignmentArchives          AssetAssignmentArchive[]
+  aiSubscriptionAssignmentArchives AISubscriptionAssignmentArchive[]
+  parkingPermitArchives            ParkingPermitArchive[]
+
+  auditsTriggered AuditLog[]
 }
 
 model RemoteWorkStatus {
-  id          String    @id @default(cuid())
-  employeeId  String
-  employee    Employee  @relation(fields: [employeeId], references: [id])
-  startDate   DateTime
-  endDate     DateTime?
-  remarks     String?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id         String    @id @default(cuid())
+  employeeId String
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+  startDate  DateTime
+  endDate    DateTime?
+  remarks    String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Asset {
   id                String   @id @default(cuid())
   assetTag          String?  @unique
-  assetType         String   // 'LAPTOP' or 'OTHER'
+  assetType         String // 'LAPTOP' or 'OTHER'
   serialNumber      String?
   model             String?
   description       String?
@@ -59,31 +60,31 @@ model Asset {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  assignments       AssetAssignment[]
+  assignments        AssetAssignment[]
   assignmentArchives AssetAssignmentArchive[]
-  repairHistories   RepairHistory[]
+  repairHistories    RepairHistory[]
 }
 
 model RepairHistory {
-  id          String   @id @default(cuid())
-  assetId     String
-  asset       Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
-  repairDate  DateTime
-  issue       String
-  vendor      String?
-  status      String   @default("COMPLETED")
-  costInr     Float?
-  costEur     Float?
-  remarks     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String   @id @default(cuid())
+  assetId    String
+  asset      Asset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  repairDate DateTime
+  issue      String
+  vendor     String?
+  status     String   @default("COMPLETED")
+  costInr    Float?
+  costEur    Float?
+  remarks    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([assetId])
   @@index([repairDate])
 }
 
 model AISubscriptionRegister {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   planIdentifier    String?
   subscriptionName  String
   subscriptionTier  String?
@@ -93,90 +94,90 @@ model AISubscriptionRegister {
   costEur           Float?
   procurementSource String?
   remarks           String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
-  assignments       AISubscriptionAssignment[]
+  assignments        AISubscriptionAssignment[]
   assignmentArchives AISubscriptionAssignmentArchive[]
 }
 
 model AssetAssignment {
-  id                String   @id @default(cuid())
-  employeeId        String
-  employee          Employee @relation(fields: [employeeId], references: [id])
-  assetId           String
-  asset             Asset    @relation(fields: [assetId], references: [id])
-  assignedDatetime  DateTime @default(now())
-  remarks           String?
+  id               String   @id @default(cuid())
+  employeeId       String
+  employee         Employee @relation(fields: [employeeId], references: [id])
+  assetId          String
+  asset            Asset    @relation(fields: [assetId], references: [id])
+  assignedDatetime DateTime @default(now())
+  remarks          String?
 }
 
 model AISubscriptionAssignment {
-  id                       String                 @id @default(cuid())
-  employeeId               String
-  employee                 Employee               @relation(fields: [employeeId], references: [id])
-  subscriptionId           String
-  subscription             AISubscriptionRegister @relation(fields: [subscriptionId], references: [id])
-  assignedDatetime         DateTime               @default(now())
-  tokensExhaustedDatetime  DateTime?
-  remarks                  String?
+  id                      String                 @id @default(cuid())
+  employeeId              String
+  employee                Employee               @relation(fields: [employeeId], references: [id])
+  subscriptionId          String
+  subscription            AISubscriptionRegister @relation(fields: [subscriptionId], references: [id])
+  assignedDatetime        DateTime               @default(now())
+  tokensExhaustedDatetime DateTime?
+  remarks                 String?
 }
 
 model ParkingPermit {
-  id            String   @id @default(cuid())
-  employeeId    String
-  employee      Employee @relation(fields: [employeeId], references: [id])
-  permitNumber  String
-  vehicleType   String
-  issueDate     DateTime
-  endDate       DateTime?
-  remarks       String?
+  id           String    @id @default(cuid())
+  employeeId   String
+  employee     Employee  @relation(fields: [employeeId], references: [id])
+  permitNumber String
+  vehicleType  String
+  issueDate    DateTime
+  endDate      DateTime?
+  remarks      String?
 }
 
 model AssetAssignmentArchive {
-  id                String   @id
-  employeeId        String
-  employee          Employee @relation(fields: [employeeId], references: [id])
-  assetId           String
-  asset             Asset    @relation(fields: [assetId], references: [id])
-  assignedDatetime  DateTime
-  returnedDatetime  DateTime @default(now())
-  remarks           String?
+  id               String   @id
+  employeeId       String
+  employee         Employee @relation(fields: [employeeId], references: [id])
+  assetId          String
+  asset            Asset    @relation(fields: [assetId], references: [id])
+  assignedDatetime DateTime
+  returnedDatetime DateTime @default(now())
+  remarks          String?
 }
 
 model AISubscriptionAssignmentArchive {
-  id                       String                 @id
-  employeeId               String
-  employee                 Employee               @relation(fields: [employeeId], references: [id])
-  subscriptionId           String
-  subscription             AISubscriptionRegister @relation(fields: [subscriptionId], references: [id])
-  assignedDatetime         DateTime
-  tokensExhaustedDatetime  DateTime?
-  returnedDatetime         DateTime               @default(now())
-  remarks                  String?
+  id                      String                 @id
+  employeeId              String
+  employee                Employee               @relation(fields: [employeeId], references: [id])
+  subscriptionId          String
+  subscription            AISubscriptionRegister @relation(fields: [subscriptionId], references: [id])
+  assignedDatetime        DateTime
+  tokensExhaustedDatetime DateTime?
+  returnedDatetime        DateTime               @default(now())
+  remarks                 String?
 }
 
 model ParkingPermitArchive {
-  id            String   @id
-  employeeId    String
-  employee      Employee @relation(fields: [employeeId], references: [id])
-  permitNumber  String
-  vehicleType   String
-  issueDate     DateTime
-  endDate       DateTime?
-  archivedDatetime DateTime @default(now())
-  remarks       String?
+  id               String    @id
+  employeeId       String
+  employee         Employee  @relation(fields: [employeeId], references: [id])
+  permitNumber     String
+  vehicleType      String
+  issueDate        DateTime
+  endDate          DateTime?
+  archivedDatetime DateTime  @default(now())
+  remarks          String?
 }
 
 model AuditLog {
-  id                    String   @id @default(cuid())
-  tableName             String
-  recordId              String
-  action                String
-  oldData               String?
-  newData               String?
-  changedByEmployeeId   String?
-  changedByEmployee     Employee? @relation(fields: [changedByEmployeeId], references: [id])
-  changedAt             DateTime @default(now())
+  id                  String    @id @default(cuid())
+  tableName           String
+  recordId            String
+  action              String
+  oldData             String?
+  newData             String?
+  changedByEmployeeId String?
+  changedByEmployee   Employee? @relation(fields: [changedByEmployeeId], references: [id])
+  changedAt           DateTime  @default(now())
 }
 
 model SystemSettings {
